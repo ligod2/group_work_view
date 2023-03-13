@@ -3,43 +3,32 @@
  * @Description: 一个书架页面
 -->
 <script setup>
+import { Search} from '@element-plus/icons-vue'
+
+const emit = defineEmits(['goPage'])
 
 
-
-import { reactive, ref } from 'vue'
-import { service } from "../../apis/index";
-
-
-let searchKey = ref('');
-let searchResults = ref([]);
-
-async function searchBook(searchKey) {
-    await service.get('user/findAllUsers').then(
-        res => {
-            if (res.status == 200) {
-                searchResults.value = res.data;
-            } else {
-                ElMessage.error('连接错误！！')
-            }
-        })
+function goSearchPage(){
+    emit('goPage','SearchPage')
 }
 
 
 </script>
 
 <template>
-    <Search />
-    <div class="search">
-        <el-input placeholder="搜索书籍" prefix-icon="Search" v-model="searchKey" clearable />
-        <el-button @click="searchBook(searchKey)">搜索</el-button>
-    </div>
-    <li v-for="item in searchResults">
-        {{ item }}
-</li>
+    <el-row justify="space-between">
+        <el-col :span="5" >
+            <el-input placeholder="搜索本地书籍" prefix-icon="Search" v-model="searchKey" clearable />            
+        </el-col>
+
+        <el-col :span="7.5">
+            <el-button type="primary" :icon="Search" circle @click="goSearchPage"/>
+        </el-col>
+    </el-row>
+
+    <el-col :span="24">
+        <el-divider class="line"></el-divider>
+    </el-col>
 </template>
 
-<style scoped>
-.search {
-    display: flex;
-}
-</style>
+<style scoped></style>

@@ -1,7 +1,3 @@
-<!--
- * @Author: 木云蜗
- * @Description: 
--->
 <script setup>
 import { useDark, useToggle } from '@vueuse/core'
 
