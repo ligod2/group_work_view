@@ -1,7 +1,3 @@
-<!--
- * @Author: 木云蜗
- * @Description: 主页
--->
 <script setup>
 import {useDemoStore} from '@/store/DemoStore.js'
 import { ref, reactive, toRaw ,toRef} from 'vue';

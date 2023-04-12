@@ -9,6 +9,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/components/main/Home.vue'
 import Demo from '@/components/main/Demo.vue'
+import MQTTLED from "@/components/applets/MQTTLED.vue"
 
 import BookSelf from '../components/book/BookSelf.vue'
 import SearchPage from '../components/book/SearchPage.vue'
@@ -21,7 +22,7 @@ const router = createRouter({
     {
       name: 'Home',
       path: '/',
-      component: ReadPage,
+      component: MQTTLED,
     },
     // 书籍书架页面
     {

@@ -51,19 +51,21 @@ export const useBooksStore = defineStore('books', () => {
       })
   }
 
+
+
   // 阅读书籍的内容
-  function readBook(book){
+  function goBookContentPage(book) {
     currentBook.value = book;
-    router.push({name:'ReadPage'})
+    router.push({ name: 'ReadPage' })
   }
 
-  return { searchResults, currentBook, searchBooks,readBook }
+  return { searchResults, currentBook, searchBooks,getBookInfo, goBookContentPage }
 
 }, {
   persist: {
-    enable:true,
-      storage: sessionStorage,
-      debug:true,
+    enable: true,
+    storage: sessionStorage,
+    debug: true,
   }
 }
 )
