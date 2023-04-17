@@ -1,5 +1,6 @@
 <script setup>
-
+import * as echarts from "echarts";
+import { provide } from "vue";
 import TabList from './components/main/TabList.vue';
 import { useRouter, RouterView } from 'vue-router';
 import { ref } from 'vue';
@@ -20,6 +21,7 @@ function asideShow(event) {
     asideWidth.value = 0;
   }
 }
+provide("echarts", echarts);
 
 </script>
 <template>
@@ -39,7 +41,7 @@ function asideShow(event) {
             </template>
             <template #extra>
               <div class="flex items-center">
-                <el-button>Print</el-button>
+                <!-- <el-button>Print</el-button> -->
               </div>
             </template>
           </el-page-header>
@@ -72,6 +74,7 @@ function asideShow(event) {
   padding-top: 8px;
 }
 .el-container{
+  width: 100%;
   height: 100%;
 }
 </style>
