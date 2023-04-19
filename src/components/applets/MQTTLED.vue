@@ -2,7 +2,38 @@
 import { triggerRef, getCurrentInstance, VueElement, onMounted, onUnmounted, ref, reactive, watch } from "vue"
 import * as mqtt from "mqtt/dist/mqtt.min";
 
-import * as echarts from "echarts";
+// import * as echarts from "echarts";
+// 引入 echarts 核心模块，核心模块提供了 echarts 使用必须要的接口。
+import * as echarts from 'echarts/core';
+// 引入柱状图图表，图表后缀都为 Chart
+import { LineChart } from 'echarts/charts';
+// 引入提示框，标题，直角坐标系，数据集，内置数据转换器组件，组件后缀都为 Component
+import {
+  TitleComponent,
+  TooltipComponent,
+  MarkLineComponent,
+  GridComponent,
+  DatasetComponent,
+  TransformComponent
+} from 'echarts/components';
+// 标签自动布局、全局过渡动画等特性
+import { LabelLayout, UniversalTransition } from 'echarts/features';
+// 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
+import { CanvasRenderer } from 'echarts/renderers';
+
+// 注册必须的组件
+echarts.use([
+  TitleComponent,
+  TooltipComponent,
+  MarkLineComponent,
+  GridComponent,
+  DatasetComponent,
+  TransformComponent,
+  LineChart,
+  LabelLayout,
+  UniversalTransition,
+  CanvasRenderer
+]);
 
 
 let led = reactive({
@@ -14,16 +45,26 @@ let led = reactive({
 let adcData = 0;
 
 // 连接MQTT服务的地址，使用web socket协议，需要在地址上加上mqtt
-// const connectUrl = "wss://broker-cn.emqx.io:8084/mqtt";
-const connectUrl = "ws://127.0.0.1:8083/mqtt";
+const connectUrl = "wss://broker-cn.emqx.io:8084/mqtt";
+// const connectUrl = "ws://127.0.0.1:8083/mqtt";
 const topics = ["led/cpu"];
+
+let currentDate = new Date();
+let year = currentDate.getFullYear();
+let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+let day = ("0" + currentDate.getDate()).slice(-2);
+let hour = ("0" + currentDate.getHours()).slice(-2);
+let minute = ("0" + currentDate.getMinutes()).slice(-2);
+let second = ("0" + currentDate.getSeconds()).slice(-2);
+
+let formattedDate = `${year}/${month}/${day}/${hour}/${minute}/${second}`;
 // 连接设置
 const options = {
     clean: true,	// 保留会话
     connectTimeout: 4000,	// 超时时间
     reconnectPeriod: 1000,	// 重连时间间隔
     // 认证信息
-    clientId: "cpu2913064141",
+    clientId: "cpu"+formattedDate,
     username: 'hehe',
     password: 'hehe',
 }
@@ -50,7 +91,6 @@ function initMQTT() {
     client.on('message', (topic, payload, qos) => {
         // 这里有可能拿到的数据格式是Uint8Array格式，用toString转成字符串
         let message = payload.toString();
-
         if (topic == 'led/cpu') {
             if (message == 'led_sign') {
                 // 登录信息判断
@@ -65,12 +105,11 @@ function initMQTT() {
             } else if (message.includes("threshold")) {
                 let value = message.match(/\d+\.*\d*/g)[0];
                 led.threshold = Number.parseInt(value, 10);
-                console.log("当前阈值=" + led.threshold);
             } else if (message.includes("adc")) {
                 // LED光敏信息判断
+                led.isSign = true;
                 let value = message.match(/\d+\.*\d*/g)[0];
                 addADCData(Number.parseInt(value));
-                led.isSign = true;
             }
         }
     });
@@ -159,7 +198,6 @@ function addADCData(value) {
 }
 function setHreshold(value) {
     client.publish("led/mcpu", "threshold=[" + value.toString().padStart(3, "0") + ']', { qos: 2, retain: false });
-    console.log("threshold = " + value)
 }
 
 // -------------------------------------------------------------------------

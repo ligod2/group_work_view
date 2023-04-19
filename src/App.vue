@@ -1,13 +1,10 @@
 <script setup>
-import * as echarts from "echarts";
-import { provide } from "vue";
 import TabList from './components/main/TabList.vue';
 import { useRouter, RouterView } from 'vue-router';
 import { ref } from 'vue';
 
 const router = useRouter();
 let asideWidth = ref(0);
-let color = ref('red');
 function navigate(str) {
   router.push({ name: str })
   console.log(str);
@@ -21,7 +18,6 @@ function asideShow(event) {
     asideWidth.value = 0;
   }
 }
-provide("echarts", echarts);
 
 </script>
 <template>
